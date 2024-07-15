@@ -1,8 +1,8 @@
-package med.voll.api.controller.medico;
+package med.voll.api.medico;
 
 import jakarta.persistence.*;
 import lombok.*;
-import med.voll.api.controller.endereco.Endereco;
+import med.voll.api.endereco.Endereco;
 
 @Table(name = "medicos")
 @Entity(name = "Medico")
@@ -16,6 +16,7 @@ public class Medico {
     private Long id;
     private String nome;
     private String email;
+    private String telefone;
     private String crm;
 
     @Enumerated(EnumType.STRING)
@@ -27,6 +28,7 @@ public class Medico {
     public Medico(DadosCadastroMedico medico) {
         this.nome = medico.nome();
         this.email = medico.email();
+        this.telefone = medico.telefone();
         this.crm = medico.crm();
         this.especialidade = medico.especialidade();
         this.endereco = new Endereco(medico.endereco());
