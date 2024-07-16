@@ -27,7 +27,7 @@ public class PacienteController {
 
     @GetMapping
     public Page<DadosListagemPaciente> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao){
-        return repository.findAll(paginacao).map(DadosListagemPaciente::new);
+        return repository.findAllByAtivoTrue(paginacao).map(DadosListagemPaciente::new);
     }
 
     @GetMapping(params = "id")
@@ -46,6 +46,17 @@ public class PacienteController {
         if (paciente.isPresent()){
             paciente.get().atualizarDados(dados);
             return "Dados do paciente atualizados com sucesso!";
+        }
+        return "Paciente não encontrado";
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public String deletar(@PathVariable Long id){
+        Optional<Paciente> paciente = repository.findById(id);
+        if (paciente.isPresent()){
+            paciente.get().deletar();
+            return "Paciente deletado do banco de dados";
         }
         return "Paciente não encontrado";
     }

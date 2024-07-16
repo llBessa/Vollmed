@@ -30,7 +30,7 @@ public class MedicoController {
 
     @GetMapping
     public Page<DadosListagemMedico> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao){
-        return repository.findAll(paginacao).map(DadosListagemMedico::new);
+        return repository.findAllByAtivoTrue(paginacao).map(DadosListagemMedico::new);
     }
 
     @GetMapping(params = "id")
@@ -51,5 +51,16 @@ public class MedicoController {
             return "Dados do médico foram atualizados com sucesso!";
         }
         return "Médico não encontrado!";
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public String deletar(@PathVariable Long id){
+        Optional<Medico> medico = repository.findById(id);
+        if (medico.isPresent()){
+            medico.get().deletar();
+            return "Médico deletado do banco de dados";
+        }
+        return "Médico não encontrado";
     }
 }
