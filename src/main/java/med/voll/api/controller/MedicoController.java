@@ -15,11 +15,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("medicos")
 public class MedicoController {
-    private static final Logger logger = LoggerFactory.getLogger(MedicoController.class);
 
     @Autowired
     private MedicoRepository repository;
@@ -34,5 +34,14 @@ public class MedicoController {
     @GetMapping
     public Page<DadosListagemMedico> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao){
         return repository.findAll(paginacao).map(DadosListagemMedico::new);
+    }
+
+    @GetMapping(params = "id")
+    public DadosListagemMedico listarMedicoPorId(@RequestParam(name = "id") Long id){
+        Optional<Medico> medico = repository.findById(id);
+        if(medico.isPresent()){
+            return medico.map(DadosListagemMedico::new).get();
+        }
+        return null;
     }
 }
