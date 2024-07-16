@@ -2,10 +2,7 @@ package med.voll.api.controller;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import med.voll.api.medico.DadosCadastroMedico;
-import med.voll.api.medico.DadosListagemMedico;
-import med.voll.api.medico.Medico;
-import med.voll.api.medico.MedicoRepository;
+import med.voll.api.medico.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +23,8 @@ public class MedicoController {
 
     @PostMapping
     @Transactional
-    public String cadastrar(@RequestBody @Valid DadosCadastroMedico medico){
-        repository.save(new Medico(medico));
+    public String cadastrar(@RequestBody @Valid DadosCadastroMedico dadosMedico){
+        repository.save(new Medico(dadosMedico));
         return "Médico criado com sucesso!";
     }
 
@@ -43,5 +40,16 @@ public class MedicoController {
             return medico.map(DadosListagemMedico::new).get();
         }
         return null;
+    }
+
+    @PutMapping
+    @Transactional
+    public String atualizar(@RequestBody @Valid DadosAtualizacaoMedico dados){
+        Optional<Medico> medico = repository.findById(dados.id());
+        if (medico.isPresent()){
+            medico.get().atualizarDados(dados);
+            return "Dados do médico foram atualizados com sucesso!";
+        }
+        return "Médico não encontrado!";
     }
 }

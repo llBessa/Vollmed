@@ -2,11 +2,7 @@ package med.voll.api.controller;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import med.voll.api.medico.DadosListagemMedico;
-import med.voll.api.paciente.DadosCadastroPaciente;
-import med.voll.api.paciente.DadosListagemPaciente;
-import med.voll.api.paciente.Paciente;
-import med.voll.api.paciente.PacienteRepository;
+import med.voll.api.paciente.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,8 +20,8 @@ public class PacienteController {
 
     @PostMapping
     @Transactional
-    public String cadastrar(@RequestBody @Valid DadosCadastroPaciente paciente){
-        repository.save(new Paciente(paciente));
+    public String cadastrar(@RequestBody @Valid DadosCadastroPaciente dadosPaciente){
+        repository.save(new Paciente(dadosPaciente));
         return "Paciente criado com sucesso!";
     }
 
@@ -41,5 +37,16 @@ public class PacienteController {
             return paciente.map(DadosListagemPaciente::new).get();
         }
         return null;
+    }
+
+    @PutMapping
+    @Transactional
+    public String atualizar(@RequestBody @Valid DadosAtualizacaoPaciente dados){
+        Optional<Paciente> paciente = repository.findById(dados.id());
+        if (paciente.isPresent()){
+            paciente.get().atualizarDados(dados);
+            return "Dados do paciente atualizados com sucesso!";
+        }
+        return "Paciente não encontrado";
     }
 }
