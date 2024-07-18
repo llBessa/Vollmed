@@ -18,11 +18,14 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
+    @Value("${api.security.token.issuer}")
+    private String issuer;
+
     public String gerarToken(Usuario usuario){
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
-                    .withIssuer("API Voll.med")
+                    .withIssuer(issuer)
                     .withSubject(usuario.getLogin())
                     .withExpiresAt(getDataExpiracao())
                     .sign(algorithm);
@@ -35,7 +38,7 @@ public class TokenService {
         try {
             Algorithm algoritmo = Algorithm.HMAC256(secret);
             return JWT.require(algoritmo)
-                    .withIssuer("API Voll.med")
+                    .withIssuer(issuer)
                     .build()
                     .verify(tokenJWT)
                     .getSubject();
