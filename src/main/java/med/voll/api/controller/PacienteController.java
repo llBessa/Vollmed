@@ -37,32 +37,23 @@ public class PacienteController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DadosDetalhamentoPaciente> detalhar(@PathVariable(name = "id") Long id){
-        if (repository.existsById(id)){
-            Paciente paciente = repository.getReferenceById(id);
-            return ResponseEntity.ok(new DadosDetalhamentoPaciente(paciente));
-        }
-        return ResponseEntity.notFound().build();
+        Paciente paciente = repository.getReferenceById(id);
+        return ResponseEntity.ok(new DadosDetalhamentoPaciente(paciente));
     }
 
     @PutMapping
     @Transactional
     public ResponseEntity<DadosDetalhamentoPaciente> atualizar(@RequestBody @Valid DadosAtualizacaoPaciente dados){
-        if (repository.existsById(dados.id())){
-            Paciente paciente = repository.getReferenceById(dados.id());
-            paciente.atualizarDados(dados);
-            return ResponseEntity.ok(new DadosDetalhamentoPaciente(paciente));
-        }
-        return ResponseEntity.notFound().build();
+        Paciente paciente = repository.getReferenceById(dados.id());
+        paciente.atualizarDados(dados);
+        return ResponseEntity.ok(new DadosDetalhamentoPaciente(paciente));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<Object> deletar(@PathVariable Long id){
-        if (repository.existsById(id)){
-            Paciente paciente = repository.getReferenceById(id);
-            paciente.deletar();
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        Paciente paciente = repository.getReferenceById(id);
+        paciente.deletar();
+        return ResponseEntity.noContent().build();
     }
 }
