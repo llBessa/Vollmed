@@ -2,6 +2,7 @@ package med.voll.api.controller;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import med.voll.api.domain.paciente.Paciente;
 import med.voll.api.domain.paciente.PacienteRepository;
 import med.voll.api.domain.paciente.*;
@@ -17,6 +18,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("pacientes")
+@AllArgsConstructor
 public class PacienteController {
 
     @Autowired
@@ -31,7 +33,7 @@ public class PacienteController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<DadosListagemPaciente>> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao){
+    public ResponseEntity<Page<DadosListagemPaciente>> listar(@PageableDefault(sort = {"nome"}) Pageable paginacao){
         return ResponseEntity.ok(repository.findAllByAtivoTrue(paginacao).map(DadosListagemPaciente::new));
     }
 
@@ -51,7 +53,7 @@ public class PacienteController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<Object> deletar(@PathVariable Long id){
+    public ResponseEntity<?> deletar(@PathVariable Long id){
         Paciente paciente = repository.getReferenceById(id);
         paciente.deletar();
         return ResponseEntity.noContent().build();
