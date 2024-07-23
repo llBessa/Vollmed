@@ -2,6 +2,7 @@ package med.voll.api.service;
 
 import lombok.RequiredArgsConstructor;
 import med.voll.api.domain.consulta.*;
+import med.voll.api.domain.consulta.validacoes.ValidacaoCancelamentoConsulta;
 import med.voll.api.domain.consulta.validacoes.ValidadorAgendamentoConsulta;
 import med.voll.api.domain.medico.Medico;
 import med.voll.api.domain.medico.MedicoRepository;
@@ -19,7 +20,8 @@ public class ConsultaService {
     private final MedicoRepository medicoRepository;
     private final PacienteRepository pacienteRepository;
 
-    private final List<ValidadorAgendamentoConsulta> validadores;
+    private final List<ValidadorAgendamentoConsulta> validadoresAgendamento;
+    private final List<ValidacaoCancelamentoConsulta> validadoresCancelamento;
 
     public DadosDetalhamentoConsulta agendar(DadosAgendamentoConsulta dadosAgendamento) throws ValidacaoException{
         if(!pacienteRepository.existsById(dadosAgendamento.idPaciente())){
@@ -30,7 +32,7 @@ public class ConsultaService {
             throw new ValidacaoException("Id do médico informado não existe!");
         }
 
-        for (ValidadorAgendamentoConsulta validador : validadores) {
+        for (ValidadorAgendamentoConsulta validador : validadoresAgendamento) {
             validador.validar(dadosAgendamento);
         }
 
@@ -64,6 +66,10 @@ public class ConsultaService {
     public void cancelar(DadosCancelamentoConsulta dados) throws ValidacaoException {
         if (!repository.existsById(dados.idConsulta())){
             throw new ValidacaoException("Id da consulta não existe");
+        }
+
+        for (ValidacaoCancelamentoConsulta validador : validadoresCancelamento) {
+            validador.validar(dados);
         }
 
         Consulta consulta = repository.getReferenceById(dados.idConsulta());

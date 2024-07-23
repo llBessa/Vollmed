@@ -17,7 +17,7 @@ public class ValidadorPacienteSemConsultaNoDia implements ValidadorAgendamentoCo
     public void validar(DadosAgendamentoConsulta dados) throws ValidacaoException {
         LocalDateTime horaAbertua = dados.data().withHour(7);
         LocalDateTime horaEncerramento = dados.data().withHour(18);
-        boolean pacientePossuiConsultaNoDia = consultaRepository.existsByPacienteIdAndDataBetween(dados.idPaciente(), horaAbertua, horaEncerramento);
+        boolean pacientePossuiConsultaNoDia = consultaRepository.existsByPacienteIdAndDataBetweenAndMotivoCancelamentoIsNull(dados.idPaciente(), horaAbertua, horaEncerramento);
 
         if(pacientePossuiConsultaNoDia){
             throw new ValidacaoException("Paciente já possui consulta agendada nesse dia");

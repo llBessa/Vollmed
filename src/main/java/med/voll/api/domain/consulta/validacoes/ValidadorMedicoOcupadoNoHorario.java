@@ -13,7 +13,7 @@ public class ValidadorMedicoOcupadoNoHorario implements ValidadorAgendamentoCons
     private final ConsultaRepository consultaRepository;
 
     public void validar(DadosAgendamentoConsulta dadosAgendamentoConsulta) throws ValidacaoException {
-        boolean isMedicoOcupadoNoHorario = consultaRepository.existsByMedicoIdAndData(dadosAgendamentoConsulta.idMedico(), dadosAgendamentoConsulta.data());
+        boolean isMedicoOcupadoNoHorario = consultaRepository.existsByMedicoIdAndDataAndMotivoCancelamentoIsNull(dadosAgendamentoConsulta.idMedico(), dadosAgendamentoConsulta.data());
         if (isMedicoOcupadoNoHorario) {
             throw new ValidacaoException("Médico já possui outra consulta marcada nesse horário");
         }

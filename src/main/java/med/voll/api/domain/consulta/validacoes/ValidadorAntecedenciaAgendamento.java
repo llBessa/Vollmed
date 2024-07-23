@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 public class ValidadorAntecedenciaAgendamento implements ValidadorAgendamentoConsulta{
 
     public void validar(DadosAgendamentoConsulta dados) throws ValidacaoException {
-        var dataConsulta = dados.data();
-        var agora = LocalDateTime.now();
-        var diferencaEmMinutos = Duration.between(agora, dataConsulta).toMinutes();
+        LocalDateTime dataConsulta = dados.data();
+        LocalDateTime agora = LocalDateTime.now();
+        Long diferencaEmMinutos = Duration.between(agora, dataConsulta).toMinutes();
 
         if (diferencaEmMinutos < 30) {
             throw new ValidacaoException("Consulta deve ser agendada com antecedência mínima de 30 minutos");
