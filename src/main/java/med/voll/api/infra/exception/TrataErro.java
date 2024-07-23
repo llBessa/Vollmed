@@ -28,4 +28,9 @@ public class TrataErro {
         List<FieldError> errosValidacao = exception.getFieldErrors();
         return ResponseEntity.badRequest().body(errosValidacao.stream().map(DadosErroValidacao::new).toList());
     }
+
+    @ExceptionHandler(ValidacaoException.class)
+    public ResponseEntity<?> trataErroAgendamento(ValidacaoException exception){
+        return ResponseEntity.badRequest().body(exception.getMessage());
+    }
 }

@@ -3,7 +3,6 @@ package med.voll.api.controller;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import med.voll.api.domain.consulta.Consulta;
 import med.voll.api.domain.consulta.DadosAgendamentoConsulta;
 import med.voll.api.domain.consulta.DadosCancelamentoConsulta;
 import med.voll.api.domain.consulta.DadosDetalhamentoConsulta;
@@ -22,10 +21,8 @@ public class ConsultaController {
     @PostMapping
     @Transactional
     public ResponseEntity<DadosDetalhamentoConsulta> agendar(@RequestBody @Valid DadosAgendamentoConsulta dados) throws ValidacaoException {
-        Consulta consulta = service.agendar(dados);
-        return ResponseEntity.ok(new DadosDetalhamentoConsulta(
-                consulta.getId(), consulta.getMedico().getId(), consulta.getPaciente().getId(), consulta.getData())
-        );
+        DadosDetalhamentoConsulta detalhamentoConsulta = service.agendar(dados);
+        return ResponseEntity.ok(detalhamentoConsulta);
     }
 
     @DeleteMapping

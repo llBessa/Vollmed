@@ -1,15 +1,15 @@
 package med.voll.api.service;
 
 import lombok.RequiredArgsConstructor;
-import med.voll.api.domain.consulta.Consulta;
-import med.voll.api.domain.consulta.ConsultaRepository;
-import med.voll.api.domain.consulta.DadosAgendamentoConsulta;
-import med.voll.api.domain.consulta.DadosCancelamentoConsulta;
+import med.voll.api.domain.consulta.*;
+import med.voll.api.domain.consulta.validacoes.ValidadorAgendamentoConsulta;
 import med.voll.api.domain.medico.Medico;
 import med.voll.api.domain.medico.MedicoRepository;
 import med.voll.api.domain.paciente.PacienteRepository;
 import med.voll.api.infra.exception.ValidacaoException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +19,9 @@ public class ConsultaService {
     private final MedicoRepository medicoRepository;
     private final PacienteRepository pacienteRepository;
 
-    public Consulta agendar(DadosAgendamentoConsulta dadosAgendamento) throws ValidacaoException{
+    private final List<ValidadorAgendamentoConsulta> validadores;
+
+    public DadosDetalhamentoConsulta agendar(DadosAgendamentoConsulta dadosAgendamento) throws ValidacaoException{
         if(!pacienteRepository.existsById(dadosAgendamento.idPaciente())){
             throw new ValidacaoException("Id do paciente informado não existe!");
         }
@@ -28,12 +30,23 @@ public class ConsultaService {
             throw new ValidacaoException("Id do médico informado não existe!");
         }
 
+        for (ValidadorAgendamentoConsulta validador : validadores) {
+            validador.validar(dadosAgendamento);
+        }
+
+        Medico medico = escolheMedicoAleatorio(dadosAgendamento);
+
+        if (medico == null) {
+            throw new ValidacaoException("Não existe médico disponível nessa data");
+        }
+
         Consulta consulta = new Consulta();
-        consulta.setMedico(escolheMedicoAleatorio(dadosAgendamento));
+        consulta.setMedico(medico);
         consulta.setPaciente(pacienteRepository.getReferenceById(dadosAgendamento.idPaciente()));
         consulta.setData(dadosAgendamento.data());
         repository.save(consulta);
-        return consulta;
+
+        return new DadosDetalhamentoConsulta(consulta);
     }
 
     private Medico escolheMedicoAleatorio(DadosAgendamentoConsulta dadosAgendamento) throws ValidacaoException {
