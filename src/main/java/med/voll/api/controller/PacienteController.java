@@ -1,12 +1,13 @@
 package med.voll.api.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import med.voll.api.domain.paciente.Paciente;
 import med.voll.api.domain.paciente.PacienteRepository;
 import med.voll.api.domain.paciente.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -19,10 +20,10 @@ import java.net.URI;
 @RestController
 @RequestMapping("pacientes")
 @AllArgsConstructor
+@SecurityRequirement(name = "bearer-key")
 public class PacienteController {
 
-    @Autowired
-    private PacienteRepository repository;
+    private final PacienteRepository repository;
 
     @PostMapping
     @Transactional

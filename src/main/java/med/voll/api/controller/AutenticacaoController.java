@@ -1,6 +1,7 @@
 package med.voll.api.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import med.voll.api.domain.usuario.DadosAutenticacao;
 import med.voll.api.domain.usuario.Usuario;
 import med.voll.api.infra.security.DadosTokenJWT;
@@ -17,13 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/login")
+@RequiredArgsConstructor
 public class AutenticacaoController {
 
-    @Autowired
-    private AuthenticationManager manager;
-
-    @Autowired
-    private TokenService tokenService;
+    private final AuthenticationManager manager;
+    private final TokenService tokenService;
 
     @PostMapping
     public ResponseEntity<Object> login(@RequestBody @Valid DadosAutenticacao dados){

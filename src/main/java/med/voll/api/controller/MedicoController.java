@@ -1,7 +1,9 @@
 package med.voll.api.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import med.voll.api.domain.medico.Medico;
 import med.voll.api.domain.medico.MedicoRepository;
 import med.voll.api.domain.medico.*;
@@ -17,10 +19,11 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("medicos")
+@SecurityRequirement(name = "bearer-key")
+@RequiredArgsConstructor
 public class MedicoController {
 
-    @Autowired
-    private MedicoRepository repository;
+    private final MedicoRepository repository;
 
     @PostMapping
     @Transactional
