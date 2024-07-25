@@ -1,11 +1,13 @@
 package med.voll.api.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import med.voll.api.domain.paciente.Paciente;
 import med.voll.api.domain.paciente.PacienteRepository;
 import med.voll.api.domain.paciente.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -17,10 +19,11 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("pacientes")
+@AllArgsConstructor
+@SecurityRequirement(name = "bearer-key")
 public class PacienteController {
 
-    @Autowired
-    private PacienteRepository repository;
+    private final PacienteRepository repository;
 
     @PostMapping
     @Transactional
@@ -31,7 +34,7 @@ public class PacienteController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<DadosListagemPaciente>> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao){
+    public ResponseEntity<Page<DadosListagemPaciente>> listar(@PageableDefault(sort = {"nome"}) Pageable paginacao){
         return ResponseEntity.ok(repository.findAllByAtivoTrue(paginacao).map(DadosListagemPaciente::new));
     }
 
@@ -51,7 +54,7 @@ public class PacienteController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<Object> deletar(@PathVariable Long id){
+    public ResponseEntity<?> deletar(@PathVariable Long id){
         Paciente paciente = repository.getReferenceById(id);
         paciente.deletar();
         return ResponseEntity.noContent().build();
